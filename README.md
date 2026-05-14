@@ -1,5 +1,4 @@
-MultiFASTA-GC-Analyzer
-🧬 FASTA Analyzer Dashboard FASTA Analyzer Dashboard is a bioinformatics web application built with Streamlit that empowers students, researchers, and professionals to analyze genomic sequences in FASTA format. It provides instant insights into GC content, sequence length, and generates professional reports with charts and biological interpretations.
+MultiFASTA-GC-Analyzer 🧬 FASTA Analyzer Dashboard FASTA Analyzer Dashboard is a bioinformatics web application built with Streamlit that empowers students, researchers, and professionals to analyze genomic sequences in FASTA format. It provides instant insights into GC content, sequence length, and generates professional reports with charts and biological interpretations.
 
 🚀 Why It’s Important • Genomic data is the foundation of modern biology and medicine. • Understanding GC content and sequence composition helps in gene prediction, evolutionary studies, and molecular biology research. • This tool makes bioinformatics accessible, interactive, and educational for learners and professionals.
 
