@@ -67,9 +67,3 @@ It provides instant insights into **GC content, sequence length**, and generates
 
 To simplify genomic sequence analysis and make bioinformatics more **interactive, visual, and accessible** for learners and researchers.
 
----
-
-## ✨ Author
-
-Developed by **Masudur Rahman**  
-Focused on AI/ML, GenAI, and Computational Biology 🚀
