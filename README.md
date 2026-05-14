@@ -1,69 +1,61 @@
-# 🧬 MultiFASTA GC Analyzer
+# 🧬 MultiFASTA-GC-Analyzer  
+## FASTA Analyzer Dashboard  
 
-## FASTA Analyzer Dashboard
-
-FASTA Analyzer Dashboard is a **bioinformatics web application** built with Streamlit that enables students, researchers, and professionals to analyze genomic sequences in FASTA format.
-
-It provides instant insights into **GC content, sequence length**, and generates **professional reports with visualizations and biological interpretation**.
+FASTA Analyzer Dashboard is a bioinformatics web application built with Streamlit that empowers students, researchers, and professionals to analyze genomic sequences in FASTA format. It provides instant insights into GC content, sequence length, and generates professional reports with charts and biological interpretations.
 
 ---
 
-## 🚀 Why It Matters
+## 🚀 Why It’s Important  
 
-- Genomic data is fundamental to modern biology and medicine  
-- GC content analysis helps in gene prediction, evolutionary studies, and molecular biology research  
-- This tool makes bioinformatics **interactive, accessible, and beginner-friendly**
-
----
-
-## ✅ Key Achievements
-
-- Designed a modern **Streamlit-based dashboard UI**
-- Implemented FASTA file parsing using **Biopython**
-- Automated computation of:
-  - Sequence length  
-  - GC content (%)  
-- Developed interactive visualizations:
-  - GC distribution plots  
-  - GC comparison charts  
-  - Trend analysis  
-  - Boxplots  
-- Added **CSV export functionality**
-- Integrated **PDF report generation** with charts and insights
-- Built an **About section** for Biocode Innovators
-- Customized UI with sidebar navigation and professional styling
+• Genomic data is the foundation of modern biology and medicine.  
+• Understanding GC content and sequence composition helps in gene prediction, evolutionary studies, and molecular biology research.  
+• This tool makes bioinformatics accessible, interactive, and educational for learners and professionals.
 
 ---
 
-## ⚙️ Features
+## ✅ What We Have Done  
 
-- 📤 FASTA file upload (up to 200MB support)
-- 📊 Genomic Analysis:
-  - GC Content Distribution
-  - GC Content Comparison
-  - GC Content Trend
-  - Gene Length Visualization
-- 🖼️ Advanced composite plots for deeper insights
-- 🧾 Export Options:
-  - CSV download of processed data
-  - Professional PDF report generation
-- 📚 Educational bioinformatics dashboard for learning and research
-- 🧬 Integrated company profile (Biocode Innovators)
+• Designed a Streamlit dashboard with a modern UI.  
+• Implemented FASTA file upload & parsing using Biopython.  
+• Automated calculation of:  
+ o Sequence length  
+ o GC content (%)  
+• Built interactive charts (distribution, comparison, trends, boxplots).  
+• Added CSV export for raw data.  
+• Integrated PDF report generation with sequence summaries and charts.  
+• Developed an About Us section to highlight the mission of Biocode Innovators.  
+• Customized sidebar navigation, buttons, and footer for a professional look.
 
 ---
 
-## 🛠️ Tech Stack
+## ⚙️ Features  
 
-- Python 🐍  
-- Streamlit (Frontend Dashboard)  
-- Biopython (FASTA Parsing)  
-- Matplotlib (Data Visualization)  
-- Pandas (Data Processing)  
-- FPDF (Report Generation)
+• 📤 Upload FASTA files (up to 200MB per file).  
+• 📊 Detailed Analysis:  
+ o GC Content Distribution  
+ o GC Content Comparison  
+ o GC Content Trend  
+ o Gene Length Visualization  
+
+• 🖼️ Additional Plots for deeper insights.  
+
+• 🧾 Export Reports:  
+ o Download CSV of analyzed sequences.  
+ o Generate a professional PDF report with charts and biological insights.  
+
+• 📚 Educational Dashboard:  
+ o Designed for genomic sequence analysis, GC content visualization, and bioinformatics learning.  
+
+• 🧬 About Us Section:  
+ o Mission, Vision, Focus Areas of Biocode Innovators.
 
 ---
 
-## 🎯 Project Goal
+## 🛠️ Tech Stack  
 
-To simplify genomic sequence analysis and make bioinformatics more **interactive, visual, and accessible** for learners and researchers.
-
+• Python  
+• Streamlit (UI & Dashboard)  
+• Biopython (FASTA parsing)  
+• Matplotlib (Charts & Visualization)  
+• FPDF (PDF Report Generation)  
+• Pandas (Data Handling)
