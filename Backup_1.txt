@@ -1,0 +1,369 @@
+import streamlit as st
+
+# ------------------- PAGE CONFIG -------------------
+st.set_page_config(
+    page_title="FASTA Analyzer",
+    page_icon="🧬",
+    layout="wide"
+)
+
+# ------------------- CUSTOM CSS -------------------
+
+st.markdown("""
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Space+Grotesk:wght@500;700&display=swap');
+""", unsafe_allow_html=True)
+
+st.markdown("""
+<style>
+
+/* Import fonts */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Space+Grotesk:wght@500;700&display=swap');
+
+/* Global font */
+html, body, [class*="css"] {
+    font-family: 'Inter', sans-serif;
+}
+
+/* MAIN TITLE (FASTA Analyzer) */
+h1 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+
+/* Subheaders */
+h2, h3 {
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+}
+
+/* Sidebar text */
+[data-testid="stSidebar"] {
+    font-family: 'Inter', sans-serif;
+}
+
+</style>
+""", unsafe_allow_html=True)
+
+# ------------------- SIDEBAR -------------------
+st.sidebar.title("🧬 FASTA Analyzer")
+st.sidebar.markdown("### Navigation")
+
+section = st.sidebar.radio(
+    "Go to",
+    ["📤 Upload & Overview", "📊 Analysis", "🧾 Export", "About Us"]
+)
+
+st.sidebar.markdown("---")
+st.sidebar.caption("Built for genomic insights")
+
+# ------------------- MAIN LOGIC -------------------
+
+# SESSION STATE INIT
+if "data" not in st.session_state:
+    st.session_state["data"] = None
+
+# ------------------- SECTION 1 -------------------
+if section == "📤 Upload & Overview":
+
+    st.markdown("""
+    <h1 style='font-family: Space Grotesk;'>
+    🧬 FASTA Analyzer
+    </h1>
+    """, unsafe_allow_html=True)
+    st.caption("Upload FASTA files and generate genomic insights instantly")
+
+    uploaded_file = st.file_uploader("📤 Upload FASTA file", type=["fasta"])
+
+    if uploaded_file:
+
+        with st.spinner("🔄 Processing sequences..."):
+            from Bio import SeqIO
+            from io import StringIO
+            import pandas as pd
+
+            def read_fasta(uploaded_file):
+                stringio = StringIO(uploaded_file.getvalue().decode("utf-8"))
+                return list(SeqIO.parse(stringio, "fasta"))
+
+            def gc_content(seq):
+                return float(seq.count("G") + seq.count("C")) / len(seq) * 100
+
+            records = read_fasta(uploaded_file)
+
+            data = pd.DataFrame({
+                "Protein_Name": [rec.description for rec in records],
+                "ID": [rec.id for rec in records],
+                "Length": [len(rec.seq) for rec in records],
+                "GC_Content": [gc_content(rec.seq) for rec in records]
+                
+            })
+
+            st.subheader("Detailed Analysis")
+            st.dataframe(data)
+
+            # --- CSV Download Button ---
+            csv = data.to_csv(index=False).encode("utf-8")
+            st.download_button(
+                label="📥 Download CSV",
+                data=csv,
+                file_name="FASTA_Analysis.csv",
+                mime="text/csv"
+            )
+
+ 
+
+        st.session_state["data"] = data
+
+        st.success(f"✅ {len(data)} sequences analyzed successfully!")
+
+        # -------- METRICS --------
+        col1, col2, col3 = st.columns(3)
+        col1.metric("Total Sequences", len(data))
+        col2.metric("Avg Length", int(data["Length"].mean()))
+        col3.metric("Avg GC %", round(data["GC_Content"].mean(), 2))
+
+    else:
+        st.info("📁 Upload a FASTA file to begin")
+
+# ------------------- SECTION 2 -------------------
+elif section == "📊 Analysis":
+
+    st.title("📊 Detailed Analysis")
+
+    if st.session_state["data"] is None:
+        st.warning("⚠️ Please upload a file first")
+    else:
+        import matplotlib.pyplot as plt
+
+        data = st.session_state["data"]
+
+        st.dataframe(data, use_container_width=True)
+
+        col1, col2 = st.columns(2)
+
+        # -------- GC Distribution --------
+        with col1:
+            st.subheader("GC Distribution")
+            fig1, ax = plt.subplots()
+            ax.hist(data["GC_Content"], bins=10)
+            ax.set_title("GC Content Distribution Across Multiple FASTA Files")
+            ax.set_xlabel("GC%")
+            ax.set_ylabel("Frequency")
+            st.pyplot(fig1)
+
+            file_path1 = "gc_distribution.png"
+            fig1.savefig(file_path1, dpi=300, bbox_inches="tight")
+            with open(file_path1, "rb") as f:
+                st.download_button("Download GC Content Distribution", f, file_name="gc_distribution.png")
+
+        # -------- GC Comparison --------
+        with col2:
+            st.subheader("GC Comparison")
+            fig2, ax = plt.subplots()
+            ax.bar(data["ID"], data["GC_Content"])
+            ax.set_xlabel("Gene")
+            ax.set_ylabel("GC Content (%)")
+            ax.set_title("GC Content Comparison Across Multiple FASTA Files")
+            plt.xticks(rotation=60)
+            st.pyplot(fig2)
+
+            file_path2 = "gc_comparison.png"
+            fig2.savefig(file_path2, dpi=300, bbox_inches="tight")
+            with open(file_path2, "rb") as f:
+                st.download_button("Download GC Content Comparison", f, file_name="gc_comparison.png")
+
+        # -------- GC Trend --------
+        st.subheader("GC Trend")
+        fig3, ax = plt.subplots()
+        ax.plot(data["GC_Content"], marker='o')
+        ax.set_xlabel("Sequence Index")
+        ax.set_ylabel("GC Content (%)")
+        ax.set_title("GC Content Trend Across Sequences")
+        st.pyplot(fig3)
+
+        file_path3 = "gc_trend.png"
+        fig3.savefig(file_path3, dpi=300, bbox_inches="tight")
+        with open(file_path3, "rb") as f:
+            st.download_button("Download GC Content Trend", f, file_name="gc_trend.png")
+
+
+
+        
+
+        # --- New Section: Additional Plots ---
+        st.subheader("Additional GC Content Analysis")
+
+        fig, axs = plt.subplots(2, 2, figsize=(14,10))
+
+        # Top-left: GC Content (%) per gene
+        axs[0,0].bar(data["ID"], data["GC_Content"])
+        axs[0,0].set_title("GC Content (%)")
+        axs[0,0].set_ylabel("GC %")
+        axs[0,0].tick_params(axis='x', rotation=60)
+
+        # Top-right: Gene Length
+        axs[0,1].bar(data["ID"], data["Length"])
+        axs[0,1].set_title("Gene Length")
+        axs[0,1].set_ylabel("Length")
+        axs[0,1].tick_params(axis='x', rotation=60)
+
+        # Bottom-left: GC Content Distribution
+        axs[1,0].hist(data["GC_Content"], bins=10)
+        axs[1,0].set_title("GC Content Distribution")
+        axs[1,0].set_xlabel("GC %")
+        axs[1,0].set_ylabel("Frequency")
+
+        # Bottom-right: GC Content Spread (Boxplot)
+        axs[1,1].boxplot(data["GC_Content"], patch_artist=True, boxprops=dict())
+        axs[1,1].set_title("GC Content Spread")
+        axs[1,1].set_ylabel("GC %")
+
+        plt.tight_layout()
+        st.pyplot(fig)
+
+        file_path3 = "additional_plot.png"
+        fig3.savefig(file_path3, dpi=300, bbox_inches="tight")
+        with open(file_path3, "rb") as f:
+            st.download_button("Download Additional Plot Chart", f, file_name="additional_plot.png")
+
+
+
+
+# ------------------- SECTION 3 -------------------
+elif section == "🧾 Export":
+
+    st.title("🧾 Export Report")
+
+    if st.session_state["data"] is None:
+        st.warning("⚠️ No data available. Upload first.")
+    else:
+        from fpdf import FPDF
+
+        data = st.session_state["data"]
+
+        def create_report(data, filename="report.pdf"):
+            pdf = FPDF()
+            pdf.add_page()
+            pdf.set_font("Arial", size=12)
+
+            pdf.cell(200, 10, txt="FASTA Analysis Report", ln=True, align="C")
+            pdf.ln(10)
+
+            for _, row in data.iterrows():
+                pdf.cell(200, 10,
+                         txt=f"{row['ID']} | Length: {row['Length']} | GC%: {row['GC_Content']:.2f}",
+                         ln=True)
+
+            pdf.output(filename)
+
+        if st.button("🚀 Generate PDF Report"):
+            create_report(data)
+            st.success("✅ Report Generated!")
+
+            with open("report.pdf", "rb") as f:
+                st.download_button("📥 Download Report", f, "FASTA_Report.pdf")
+
+
+elif section == "About Us":
+    # ------------------- ABOUT US SECTION -------------------
+
+    st.markdown("""
+    <div style="max-width: 900px; margin: auto;">
+
+    <h1 style="
+        font-family: 'Space Grotesk', sans-serif;
+        font-weight: 700;
+        text-align: center;
+        background: linear-gradient(90deg, #2563eb, #60a5fa);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    ">
+    🚀 About Biocode Innovators
+    </h1>
+
+    <p style="text-align:center; font-size:16px; color:#9ca3af;">
+    Bridging Biology 🧬 and Technology 💻 through modern computational solutions
+    </p>
+
+    <br>
+
+    <div style="
+        background-color:#111827;
+        padding:20px;
+        border-radius:12px;
+        margin-bottom:20px;
+    ">
+    <p style="font-size:15px; line-height:1.7;">
+    <strong>Biocode Innovators</strong> is dedicated to transforming biological data into meaningful insights.
+    We empower students, researchers, and professionals with hands-on tools, training, and real-world applications in 
+    <strong>bioinformatics, genomics, and data-driven life sciences</strong>.
+    </p>
+    </div>
+
+    <div style="display:flex; gap:20px; flex-wrap:wrap;">
+
+    <div style="
+        flex:1;
+        background-color:#111827;
+        padding:20px;
+        border-radius:12px;
+    ">
+    <h3>👩‍🔬 Founder</h3>
+    <p>Abeera Iftikhar</p>
+
+    <h3>🎯 Mission</h3>
+    <p>Make biological data accessible, understandable, and actionable.</p>
+
+    <h3>💡 Vision</h3>
+    <p>Enable the next generation of scientists to leverage computation in biology.</p>
+    </div>
+
+    <div style="
+        flex:1;
+        background-color:#111827;
+        padding:20px;
+        border-radius:12px;
+    ">
+    <h3>📌 Focus Areas</h3>
+    <ul>
+    <li>🧬 Computational Biology</li>
+    <li>📊 Data Analysis</li>
+    <li>📈 Biological Data Visualization</li>
+    <li>⚙️ In-silico Analysis</li>
+    <li>🐍 Python for Biology</li>
+    <li>📉 R for Biology</li>
+    </ul>
+    </div>
+
+    </div>
+
+    <br>
+
+    <div style="
+        background-color:#111827;
+        padding:20px;
+        border-radius:12px;
+    ">
+    <h3>🏢 Company Details</h3>
+    <p><strong>Industry:</strong> E-Learning & Bioinformatics Solutions</p>
+    <p><strong>Team Size:</strong> 2–10 members</p>
+    <p><strong>Founded:</strong> 2025</p>
+    <p><strong>Contact:</strong> 📞 03159633608</p>
+    </div>
+
+    <br>
+
+    <p style="text-align:center; font-style:italic; color:#60a5fa;">
+    ✨ “Let’s decode biology together.” ✨
+    </p>
+
+    </div>
+    """, unsafe_allow_html=True)
+
+
+
+# ------------------- FOOTER -------------------
+st.markdown("---")
+st.caption("🧬 FASTA Analyzer • Built for genomic data insights")

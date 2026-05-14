@@ -1,0 +1,402 @@
+# elif section == "🧾 Export":
+
+#     st.markdown("""
+#     <h1 style='font-family:Space Grotesk;'>
+#     🧾 Export Analysis Report
+#     </h1>
+#     """, unsafe_allow_html=True)
+
+#     st.caption("Generate a professional genomic analysis report with charts, sequence summaries, and biological insights.")
+
+#     if st.session_state["data"] is None:
+#         st.warning("⚠️ No data available. Upload first.")
+
+#     else:
+
+#         from fpdf import FPDF
+#         import os
+
+#         data = st.session_state["data"]
+
+#         st.subheader("📋 Sequence Summary")
+#         st.dataframe(data, use_container_width=True)
+
+#         st.info("The generated report will include uploaded sequence information, graphical analysis, interpretation, and community information.")
+
+#         # ---------------- PDF FUNCTION ----------------
+#         def create_report(data, filename="report.pdf"):
+
+#             pdf = FPDF()
+#             pdf.set_auto_page_break(auto=True, margin=15)
+
+#             # ---------------- COVER PAGE ----------------
+#             pdf.add_page()
+
+#             pdf.set_fill_color(15, 23, 42)
+#             pdf.rect(0, 0, 210, 297, 'F')
+
+#             pdf.set_text_color(255,255,255)
+
+#             pdf.ln(50)
+
+#             pdf.set_font("Arial", "B", 28)
+#             pdf.cell(190, 15, "FASTA Analysis Report", ln=True, align="C")
+
+#             pdf.ln(10)
+
+#             pdf.set_font("Arial", "", 14)
+#             pdf.multi_cell(
+#                 0,
+#                 10,
+#                 "A professional genomic analysis report generated from uploaded FASTA sequences including GC content analysis, comparative visualization, and sequence trend interpretation.",
+#                 align="C"
+#             )
+
+#             pdf.ln(30)
+
+#             pdf.set_font("Arial", "I", 12)
+#             pdf.cell(190, 10, "Generated using FASTA Analyzer Dashboard", ln=True, align="C")
+
+#             # ---------------- SUMMARY PAGE ----------------
+#             pdf.add_page()
+
+#             pdf.set_text_color(37, 99, 235)
+
+#             pdf.set_font("Arial", "B", 22)
+#             pdf.cell(190, 12, "Sequence Overview", ln=True)
+
+#             pdf.ln(5)
+
+#             pdf.set_text_color(80,80,80)
+
+#             pdf.set_font("Arial", "", 11)
+
+#             intro = (
+#                 "This section summarizes uploaded FASTA sequences including protein information, sequence length, and GC content values used for downstream analysis."
+#             )
+
+#             pdf.multi_cell(0, 8, intro)
+
+#             pdf.ln(8)
+
+#             # ---------------- TABLE ----------------
+
+#             pdf.set_fill_color(37, 99, 235)
+#             pdf.set_text_color(255,255,255)
+
+#             pdf.set_font("Arial", "B", 9)
+
+#             pdf.cell(70, 10, "Protein Name", 1, 0, 'C', True)
+#             pdf.cell(40, 10, "ID", 1, 0, 'C', True)
+#             pdf.cell(30, 10, "Length", 1, 0, 'C', True)
+#             pdf.cell(40, 10, "GC %", 1, 1, 'C', True)
+
+#             pdf.set_text_color(0,0,0)
+#             pdf.set_font("Arial", "", 8)
+
+#             for _, row in data.iterrows():
+
+#                 protein = str(row["Protein_Name"])[:35]
+#                 seq_id = str(row["ID"])[:18]
+
+#                 pdf.cell(70, 10, protein, 1)
+#                 pdf.cell(40, 10, seq_id, 1)
+#                 pdf.cell(30, 10, str(row["Length"]), 1)
+#                 pdf.cell(40, 10, f"{row['GC_Content']:.2f}", 1, 1)
+
+#             # ---------------- CHART PAGES ----------------
+
+#             charts = [
+
+#                 (
+#                     "GC Content Distribution",
+#                     "gc_distribution.png",
+#                     "This histogram represents the frequency distribution of GC content values among uploaded FASTA sequences. It helps identify variability and clustering of GC composition."
+#                 ),
+
+#                 (
+#                     "GC Content Comparison",
+#                     "gc_comparison.png",
+#                     "This comparative bar chart visualizes GC percentages across different genomic sequences, enabling comparative biological interpretation."
+#                 ),
+
+#                 (
+#                     "GC Content Trend",
+#                     "gc_trend.png",
+#                     "This trend plot illustrates sequential changes in GC content values across analyzed sequences."
+#                 ),
+
+#                 (
+#                     "Additional GC Content Analysis",
+#                     "additional_plot.png",
+#                     "This advanced visualization combines multiple analytical perspectives including GC distribution, gene length variation, comparative GC content, and spread analysis."
+#                 )
+
+#             ]
+
+#             # ---------------- ADD CHARTS ----------------
+
+#             for title, image_path, description in charts:
+
+#                 if os.path.exists(image_path):
+
+#                     pdf.add_page()
+
+#                     # TITLE
+#                     pdf.set_text_color(37,99,235)
+
+#                     pdf.set_font("Arial", "B", 20)
+
+#                     pdf.cell(190, 12, title, ln=True)
+
+#                     pdf.ln(4)
+
+#                     # DESCRIPTION
+#                     pdf.set_text_color(70,70,70)
+
+#                     pdf.set_font("Arial", "", 11)
+
+#                     pdf.multi_cell(0, 7, description)
+
+#                     pdf.ln(5)
+
+#                     # IMAGE
+#                     pdf.image(image_path, x=15, w=180)
+
+#             # ---------------- COMMUNITY PAGE ----------------
+
+#             pdf.add_page()
+
+#             pdf.set_text_color(37,99,235)
+
+#             pdf.set_font("Arial", "B", 22)
+
+#             pdf.cell(190, 12, "About Biocode Innovators", ln=True)
+
+#             pdf.ln(8)
+
+#             pdf.set_text_color(50,50,50)
+
+#             pdf.set_font("Arial", "", 12)
+
+#             about_text = (
+#                 "Biocode Innovators bridges the gap between biology and computational technology. "
+#                 "The community focuses on empowering students, researchers, and professionals through "
+#                 "bioinformatics education, biological data visualization, computational biology, and "
+#                 "modern genomic analysis tools.\n\n"
+
+#                 "Core Focus Areas:\n"
+#                 "- Computational Biology\n"
+#                 "- Biological Data Visualization\n"
+#                 "- In-silico Analysis\n"
+#                 "- Python and R for Biology\n"
+#                 "- Data-driven Life Science Research\n\n"
+
+#                 "Mission:\n"
+#                 "Make biological data accessible, understandable, and actionable.\n\n"
+
+#                 "Vision:\n"
+#                 "Enable the next generation of scientists to leverage computational technologies in biology."
+#             )
+
+#             pdf.multi_cell(0, 8, about_text)
+
+#             pdf.ln(15)
+
+#             pdf.set_font("Arial", "I", 11)
+
+#             pdf.set_text_color(100,100,100)
+
+#             pdf.multi_cell(
+#                 0,
+#                 7,
+#                 "Generated using FASTA Analyzer Dashboard | Developed for genomic insight and educational bioinformatics applications."
+#             )
+
+#             # ---------------- SAVE ----------------
+#             pdf.output(filename)
+
+#         # ---------------- GENERATE BUTTON ----------------
+
+#         if st.button("🚀 Generate Professional PDF Report"):
+
+#             create_report(data)
+
+#             st.success("✅ Professional FASTA report generated successfully!")
+
+#             with open("report.pdf", "rb") as f:
+
+#                 st.download_button(
+#                     "📥 Download FASTA Analysis Report",
+#                     f,
+#                     file_name="FASTA_Report.pdf"
+#                 )
+
+
+
+
+
+
+
+
+
+
+
+# elif section == "🧾 Export":
+
+#     st.markdown("""
+#     <h1 style='font-family:Space Grotesk;'>
+#     🧾 Export Analysis Report
+#     </h1>
+#     """, unsafe_allow_html=True)
+
+#     st.caption("Generate a professional genomic analysis report with charts, sequence summaries, and biological insights.")
+
+#     if st.session_state["data"] is None:
+#         st.warning("⚠️ No data available. Upload first.")
+
+#     else:
+
+#         from fpdf import FPDF
+#         import os
+
+#         data = st.session_state["data"]
+
+#         st.subheader("📋 Sequence Summary")
+#         st.dataframe(data, use_container_width=True)
+
+#         st.info("The generated report will include uploaded sequence information, graphical analysis, interpretation, and community information.")
+
+#         # ---------------- PDF FUNCTION ----------------
+
+#         def create_report(data, filename="report.pdf"):
+
+#             from fpdf import FPDF
+#             import os
+
+#             pdf = FPDF()
+#             pdf.set_auto_page_break(auto=True, margin=10)
+
+#             # ---------------- MAIN SUMMARY PAGE ----------------
+#             pdf.add_page()
+
+#             # HEADER
+#             pdf.set_text_color(37, 99, 235)
+
+#             pdf.set_font("Arial", "B", 20)
+
+#             pdf.cell(190, 10, "FASTA Analysis Report", ln=True)
+
+#             pdf.set_font("Arial", "I", 10)
+
+#             pdf.set_text_color(90, 90, 90)
+
+#             pdf.cell(
+#                 190,
+#                 6,
+#                 "FASTA Analyzer Dashboard | Biocode Innovators",
+#                 ln=True
+#             )
+
+#             pdf.ln(8)
+
+#             # ---------------- OVERVIEW TEXT ----------------
+
+#             pdf.set_font("Arial", "", 9)
+
+#             pdf.set_text_color(70, 70, 70)
+
+#             pdf.multi_cell(
+#                 0,
+#                 6,
+#                 "Summary of uploaded FASTA sequences including sequence length and GC content analysis."
+#             )
+
+#             pdf.ln(5)
+
+#             # ---------------- TABLE ----------------
+
+#             pdf.set_fill_color(37, 99, 235)
+
+#             pdf.set_text_color(255, 255, 255)
+
+#             pdf.set_font("Arial", "B", 8)
+
+#             pdf.cell(65, 8, "Protein Name", 1, 0, 'C', True)
+#             pdf.cell(40, 8, "ID", 1, 0, 'C', True)
+#             pdf.cell(30, 8, "Length", 1, 0, 'C', True)
+#             pdf.cell(35, 8, "GC %", 1, 1, 'C', True)
+
+#             pdf.set_text_color(0, 0, 0)
+
+#             pdf.set_font("Arial", "", 7)
+
+#             for _, row in data.iterrows():
+
+#                 protein = str(row["Protein_Name"])[:30]
+#                 seq_id = str(row["ID"])[:15]
+
+#                 pdf.cell(65, 8, protein, 1)
+#                 pdf.cell(40, 8, seq_id, 1)
+#                 pdf.cell(30, 8, str(row["Length"]), 1)
+#                 pdf.cell(35, 8, f"{row['GC_Content']:.2f}", 1, 1)
+
+#             # ---------------- ANALYSIS PAGE ----------------
+
+#             pdf.add_page()
+
+#             pdf.set_text_color(37, 99, 235)
+
+#             pdf.set_font("Arial", "B", 18)
+
+#             pdf.cell(190, 10, "Comprehensive GC Content Analysis", ln=True)
+
+#             pdf.ln(5)
+
+#             pdf.set_font("Arial", "", 10)
+
+#             pdf.set_text_color(70, 70, 70)
+
+#             analysis_text = (
+#                 "This optimized subplot combines multiple genomic analyses into a "
+#                 "single visualization for faster report generation and efficient interpretation.\n\n"
+
+#                 "Included Analyses:\n"
+#                 "- GC Content Distribution\n"
+#                 "- GC Content Comparison\n"
+#                 "- GC Content Trend\n"
+#                 "- Sequence Variation Analysis"
+#             )
+
+#             pdf.multi_cell(0, 6, analysis_text)
+
+#             pdf.ln(6)
+
+#             # ---------------- SINGLE OPTIMIZED IMAGE ----------------
+
+#             if os.path.exists("additional_plot.png"):
+
+#                 pdf.image("additional_plot.png", x=15, w=180)
+
+#             # ---------------- SAVE PDF ----------------
+
+#             pdf.output(filename)
+
+
+#         # ---------------- GENERATE BUTTON ----------------
+
+#         if st.button("🚀 Generate Professional PDF Report"):
+
+#             create_report(data)
+
+#             st.success("✅ Professional FASTA report generated successfully!")
+
+#             with open("report.pdf", "rb") as f:
+
+#                 st.download_button(
+#                     "📥 Download FASTA Analysis Report",
+#                     f,
+#                     file_name="FASTA_Report.pdf"
+#                 )
+
+
